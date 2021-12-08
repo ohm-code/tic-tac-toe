@@ -6,6 +6,7 @@ const playerOnePiece = "x"
 const playerTwoPiece = "o"
 let aiPlayer = true;
 let xTurn = true; 
+let turn = 0;
 const container = document.getElementById('gameBoardContainer');
 
 
@@ -105,15 +106,17 @@ const gameController = (() => {
         console.log("playmove catch")
         if(!aiPlayer){ // no ai player
           if (!valueAt(board,keyIndex,arrayIndex)){
-           if (xTurn){
+           if (xTurn){ 
                     console.log("xplay");
                     _updateBoard(board,"x", keyIndex, arrayIndex);
                     xTurn = false;
+                    turn++
                     return
             }else {
                     console.log("oplay");
                     _updateBoard(board,"o", keyIndex, arrayIndex)
                     xTurn = true;
+                    turn++
                     return
             }}}
         else{//aiplayer logic
@@ -124,15 +127,18 @@ const gameController = (() => {
                 console.log(mapGameboardtoAiArray(holder));
                 aiController.playerMoveAiUpdate(mapGameboardtoAiArray(holder),"x");
                 xTurn = false;
+                turn++
                 //ai play part
                //aiplay
-               console.log("logicarray " + aiController.aiLogicArray);
+               if (turn == 9){return console.log("tie")}
+               {console.log("logicarray " + aiController.aiLogicArray);
                let move = aiController.aiMoveChoice("o");
                console.log("aiplay " + move);
                console.log("aiplays in" + mapAiArraytoGameBoard(move)[0] + " " + mapAiArraytoGameBoard(move)[1])
                _updateBoard(board,"o", mapAiArraytoGameBoard(move)[0], mapAiArraytoGameBoard(move)[1]);
                aiController.playerMoveAiUpdate(move,"o")
                xTurn = true;
+               turn++}
             }
     }     
 }   
@@ -179,8 +185,6 @@ const generateBoard = (board) => {
 //end gameController Logic
 
 //aiController logic
-
-
 const board = gameController.createBoard();
 generateBoard(board)
 const column = document.querySelectorAll('div.column')
