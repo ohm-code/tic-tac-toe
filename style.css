@@ -2,6 +2,8 @@
 body{
     display:flex;
     justify-content: space-around;
+    max-height:100vh; 
+    max-width:100vw;
 }
 p{
     text-align: center;
@@ -20,8 +22,9 @@ p{
     background-color: rgb(103, 103, 255);
 }
 #gameBoardContainer{
-    width:100vw;
-    height:100vw;
+    width:90vw; 
+    height:95vh; 
+    max-width: 750px;
     border:3px solid black;
     display:flex;
     flex-direction:column; 
@@ -34,8 +37,6 @@ h1{
     margin: 10px; 
 }
 div .grid{
-    width: 50px;
-    height: 50px;
     background-color: grey;
 }
 
@@ -49,9 +50,8 @@ div .row{
 .column{   
     flex: 1 1 0;
     border: 5px double black; 
-    font-size: 120px;   
+    font-size: 8em;       
     text-align: center;
-    vertical-align: middle; 
     margin:2px; 
 }
 
@@ -65,7 +65,6 @@ div .row{
     display:flex;
     order: 99 ; 
     justify-content:center;
-    width: 650px;
     margin-top: 10px;  
 } 
 button{
