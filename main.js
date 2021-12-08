@@ -1,24 +1,20 @@
 import {aiController} from './modules/aiControllerModule.js';
 
-console.log(aiController.aiLogicArray);
-
-const playerOnePiece = "x"
-const playerTwoPiece = "o"
-let aiPlayer = true;
-
 let turn = 0;
 let xTurn = ()=>{
     return turn%2>0? true:false
 }; 
+let aiPlayer = true;
+const playerPiece = (() =>{
+    return xTurn? "x":"o";
+})()
+
+const playerOnePiece = "x"
+const playerTwoPiece = "o"
 const container = document.getElementById('gameBoardContainer');
 const winMessage = document.getElementById('winMessage');
 const pMessage= document.querySelector('p');
 
-
-
-const playerPiece = (() =>{
-    return xTurn? "x":"o";
-})()
 
 //adapter  ai array index <-> array pair for gameboard coordinates
 const mapAiArraytoGameBoard = (index) =>{
