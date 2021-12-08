@@ -109,24 +109,26 @@ const gameController = (() => {
         let column0 = [board[0][0],board[1][0],board[2][0]];
         let column1 = [board[0][1],board[1][1],board[2][1]];
         let column2 = [board[0][2],board[1][2],board[2][2]];
-        if (turn ==9){
-            winMessage.textContent = "Tie!!";
-            winMessage.style.display = 'inline-block';
-            return
-        }
+       
         if(_allEqual(diagonalLR, playerPiece)|| _allEqual(diagonalRL,playerPiece)|| _allEqual(board[0],playerPiece) ||
         _allEqual(board[1],playerPiece) || _allEqual(board[2],playerPiece) || _allEqual(column0,playerPiece) || _allEqual(column1,playerPiece) || _allEqual(column2,playerPiece) ){
             let winner = '';
             if (aiPlayer){
                 winner = playerPiece=='x'? 'Player':'AI'
+                winMessage.textContent = winner + " Wins!!"
+                winMessage.style.display = 'inline-block';
                 return
             }
-            else { 
+            else if(!aiPlayer){ 
                 winner = playerPiece =='x'? 'Player One':'Player Two'
                 winMessage.textContent = winner + " Wins!!"
                 winMessage.style.display = 'inline-block';
                 return
-            } 
+            } else if (turn == 9){  
+                winMessage.textContent = "Tie!!";
+                winMessage.style.display = 'inline-block';
+                return
+            }
     }}
 
     const playMove = (board,keyIndex,arrayIndex)=>{

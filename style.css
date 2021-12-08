@@ -25,6 +25,8 @@ p{
     align-self:center;
     width:90vw; 
     height:95vh; 
+    max-height: 100vh;
+    min-width: 400px; 
     max-width: 750px;
     border:3px solid black;
     display:flex;
@@ -51,7 +53,7 @@ div .row{
 .column{   
     flex: 1 1 0;
     border: 5px double black; 
-    font-size: 8em;       
+    font-size: 8rem;        
     text-align: center;
     margin:2px; 
 }
@@ -69,7 +71,8 @@ div .row{
     margin-top: 10px;  
 } 
 button{
-    width: 120px; 
+    flex:1 1 0;
+    width: 100px; 
     height: 45px; 
     margin: 5px;  
     font-size: 15px;     
