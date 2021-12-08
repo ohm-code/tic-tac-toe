@@ -5,9 +5,14 @@ console.log(aiController.aiLogicArray);
 const playerOnePiece = "x"
 const playerTwoPiece = "o"
 let aiPlayer = true;
-let xTurn = true; 
+
 let turn = 0;
+let xTurn = ()=>{
+    return turn%2>0? true:false
+}; 
 const container = document.getElementById('gameBoardContainer');
+const winMessage = document.getElementById('winMessage');
+const pMessage= document.querySelector('p');
 
 
 
@@ -15,6 +20,7 @@ const playerPiece = (() =>{
     return xTurn? "x":"o";
 })()
 
+//adapter  ai array index <-> array pair for gameboard coordinates
 const mapAiArraytoGameBoard = (index) =>{
     switch(index){
         case 1:
@@ -83,10 +89,18 @@ const gameController = (() => {
     const valueAt = (boardObject,keyIndex,arrayIndex) => {  //done
         return boardObject[keyIndex][arrayIndex]
     }; 
-    const resetBoard = (board)=>{
+    const resetBoard = ()=>{
+        aiController.resetAiLogicArray(); 
+        turn = 0; 
+        xTurn = true;
+        pMessage.textContent = aiPlayer? "MODE: You are currently playing vs. Computer ** Be warned, the AI plays a perfect game.":
+            "MODE: Player vs Player. May the best player win!"
         Object.keys(board).forEach(element => {
+            console.log('success')  
             board[element] = ["","",""];
-        });
+            updateDisplay(); 
+            winMessage.style.display = 'none'; 
+        })
     }
  
     const winCondition = (board, playerPiece) => {  //done 
@@ -95,30 +109,45 @@ const gameController = (() => {
         let column0 = [board[0][0],board[1][0],board[2][0]];
         let column1 = [board[0][1],board[1][1],board[2][1]];
         let column2 = [board[0][2],board[1][2],board[2][2]];
-
+        if (turn ==9){
+            winMessage.textContent = "Tie!!";
+            winMessage.style.display = 'inline-block';
+            return
+        }
         if(_allEqual(diagonalLR, playerPiece)|| _allEqual(diagonalRL,playerPiece)|| _allEqual(board[0],playerPiece) ||
         _allEqual(board[1],playerPiece) || _allEqual(board[2],playerPiece) || _allEqual(column0,playerPiece) || _allEqual(column1,playerPiece) || _allEqual(column2,playerPiece) ){
-           console.log( playerPiece +" winCondition!") //****change this to alert or display message */
-        }else {return "no win condition"}
-    }
+            let winner = '';
+            if (aiPlayer){
+                winner = playerPiece=='x'? 'Player':'AI'
+                return
+            }
+            else { 
+                winner = playerPiece =='x'? 'Player One':'Player Two'
+                winMessage.textContent = winner + " Wins!!"
+                winMessage.style.display = 'inline-block';
+                return
+            } 
+    }}
 
     const playMove = (board,keyIndex,arrayIndex)=>{
         console.log("playmove catch")
-        if(!aiPlayer){ // no ai player
-          if (!valueAt(board,keyIndex,arrayIndex)){
+        if (!valueAt(board,keyIndex,arrayIndex)){
+         if(!aiPlayer){ // no ai player
            if (xTurn){ 
                     console.log("xplay");
                     _updateBoard(board,"x", keyIndex, arrayIndex);
                     xTurn = false;
                     turn++
+                    if(turn == 9){console.log("tie")}
                     return
             }else {
                     console.log("oplay");
                     _updateBoard(board,"o", keyIndex, arrayIndex)
                     xTurn = true;
                     turn++
+                    if (turn == 9){console.log("tie")}
                     return
-            }}}
+            }}
         else{//aiplayer logic
             if (xTurn){
                 console.log("xplay");
@@ -130,17 +159,20 @@ const gameController = (() => {
                 turn++
                 //ai play part
                //aiplay
-               if (turn == 9){return console.log("tie")}
-               {console.log("logicarray " + aiController.aiLogicArray);
-               let move = aiController.aiMoveChoice("o");
-               console.log("aiplay " + move);
-               console.log("aiplays in" + mapAiArraytoGameBoard(move)[0] + " " + mapAiArraytoGameBoard(move)[1])
-               _updateBoard(board,"o", mapAiArraytoGameBoard(move)[0], mapAiArraytoGameBoard(move)[1]);
-               aiController.playerMoveAiUpdate(move,"o")
-               xTurn = true;
-               turn++}
+               if (turn == 9){return console.log("tie")
+                }else 
+                setTimeout(()=>{
+                    let move = aiController.aiMoveChoice("o");
+                    console.log("aimovechoice is " + move)
+                    _updateBoard(board,"o", mapAiArraytoGameBoard(move)[0], mapAiArraytoGameBoard(move)[1]);
+                    aiController.playerMoveAiUpdate(move,"o");
+                    xTurn = true;
+                    console.log("settimeoutsuccess")
+                    turn++
+                    updateDisplay()
+                },370);
             }
-    }     
+    }}      
 }   
     return{
         createBoard,
@@ -150,9 +182,6 @@ const gameController = (() => {
         valueAt,
     }
 })();
-
-//// testing
-
 
 const generateBoard = (board) => {
     function createDiv(classname,id) {
@@ -184,12 +213,26 @@ const generateBoard = (board) => {
 }
 //end gameController Logic
 
-//aiController logic
+//game inititalization
 const board = gameController.createBoard();
 generateBoard(board)
 const column = document.querySelectorAll('div.column')
-console.log(column)
+const newGame = document.getElementById('newGame'); 
+const twoPlayer =document.getElementById('2player');
+const vsComputer = document.getElementById('vsComputer')
 
+vsComputer.addEventListener('click',()=>{
+    console.log("aiplayer true caught")
+    aiPlayer=true;
+    gameController.resetBoard(); 
+}
+)
+twoPlayer.addEventListener('click', ()=> {
+    aiPlayer=false; 
+    gameController.resetBoard();
+})
+
+newGame.addEventListener('click', gameController.resetBoard)  //gameController.resetBoard()
 const updateDisplay = () => {
     column.forEach((e,i)=>{
         e.textContent = gameController.valueAt(board,mapAiArraytoGameBoard(i)[0],mapAiArraytoGameBoard(i)[1])

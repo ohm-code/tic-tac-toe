@@ -4,6 +4,10 @@ const aiController = (() => {
     const aiLogicArrayConstant = () => {return [3,2,3,2,4,2,3,2,3]}
     let aiLogicArray= aiLogicArrayConstant();
 
+    const resetAiLogicArray = () =>{
+        aiLogicArray=aiLogicArrayConstant();
+    }
+
     const playerPieceReturn = (() =>{
         return playerPiece
     })();
@@ -43,8 +47,8 @@ const aiController = (() => {
     }
 
     const aiMoveChoice = ()=>{
-        //if there is a 0 play choice = zero
-        if (savingMove(playerPiece)){
+        if (savingMove(playerPiece) || (savingMove(playerPiece) == 0)){ 
+            console.log("savingMove aiMovechoice =" + savingMove(playerPiece))
             return savingMove(playerPiece)
         }else{
             console.log(aiLogicArray)
@@ -55,32 +59,35 @@ const aiController = (() => {
             return aiLogicArray.findIndex((e) => e == maxMoveScore) //return first index in aiLogicArray that matches the maxMoveScore
         }
     }
-
-        const savingMovesArray = () =>{
+    const savingMovesArray = () =>{  
             return(aiLogicArrayToObject().map((subarray,keyindexoutput)=> { 
-            if (getOccurence(subarray,'o')==2){ //check for 2 "x" or "o" as designated by playerPiece parameter
+            if (getOccurence(subarray,'x')==2 && ('x'==playerPiece)){ //check for 2 "x" or "o" as designated by playerPiece parameter
+                console.log("savemove  " + subarray);
                 for (let i =0; i<3; i++){
                     if (Number.isInteger(subarray[i])){ //look for the remaining valid play
-                        return (aiLogicObjectArray[keyindexoutput][i]); //return arrayLogicArray index for winning move
+                        console.log("savemove index" + aiLogicObjectArray[keyindexoutput][i]);
+                        return (aiLogicObjectArray[keyindexoutput][i]); //return arrayLogicArray index for save move
                         } }}            
-            if (getOccurence(subarray,'x')==2){ //check for 2 "x" or "o" as designated by playerPiece parameter
-                for (let i =0; i<3; i++){
+            if (getOccurence(subarray,'o')==2){ 
+                console.log("winmove  " + subarray);//check for 2 "x" or "o" as designated by playerPiece parameter
+                for (let i =0; i<3; i++){ 
                     if (Number.isInteger(subarray[i])){ //look for the remaining valid play
                         return (aiLogicObjectArray[keyindexoutput][i]); //return arrayLogicArray index for saving move
-                    } }}
+                    } }} 
         }))
         }
     
     
-    const savingMove = (playerPieceReturn) =>{
+    const savingMove = () =>{
         return (
-            savingMovesArray(playerPieceReturn).find( v => Number.isInteger(v)) // return array of playerpiece
+            savingMovesArray().find( v => Number.isInteger(v)) // return array of playerpiece
         )
     }
     return {
         savingMove,
         playerMoveAiUpdate,
         aiMoveChoice,
+        resetAiLogicArray, 
         //remove after this after testing
         aiLogicArray,
         aiLogicArrayConstant,
